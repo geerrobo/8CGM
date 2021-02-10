@@ -14,7 +14,6 @@ namespace _8CGM
     public partial class Form1 : Form
     {
         List<Panel> listPanel = new List<Panel>();
-        int index;
         Thread th;
         public Form1()
         {
