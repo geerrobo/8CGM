@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -67,17 +68,14 @@ namespace _8CGM
             odf.Filter = "All|*.jpg;*.jpeg;*.png|JPG (*.jpg,*.jpeg)|*jpg;*jpeg|PNG|*.png";
             if (odf.ShowDialog() == DialogResult.OK)
             {
-                int width = 640, height = 320;
-                //bitmap
-                Bitmap bmp = new Bitmap(width, height);
                 Bitmap bi = new Bitmap(odf.FileName);
-
-                //pictureBox1.Size = new Size(bi.Width, bi.Height);
-                bi.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                pictureBox1.Image = bi;
-
-                Color[,] pixel = new Color[bi.Width, bi.Height];
-                /*for (int i = 0; i < bi.Width; i++)
+                
+                pictureBox1.Image = bmpResize(bi, 350, 350, true);
+                //pictureBox2.Image = bmpResize(new Bitmap("C:\\Users\\geerc\\source\\repos\\8CGM\\person_watermark2.png"), 200, 200, false);
+                //pictureBox2.Image = new Bitmap("C:\\Users\\geerc\\source\\repos\\8CGM\\person_watermark2.png");
+                //pictureBox2.Size = new Size(200, 200);
+                /*Color[,] pixel = new Color[bi.Width, bi.Height];
+                for (int i = 0; i < bi.Width; i++)
                 {
                     for (int j = 0; j < bi.Height; j++)
                     {
@@ -85,13 +83,48 @@ namespace _8CGM
                     }
                 }*/
 
+                int partlenght = bi.Height / 3;
+                /*Color top = new Color();
+                top = bi.GetPixel(bi.Width/2,partlenght/2);
+                Color mid = new Color();
+                mid = bi.GetPixel(bi.Width/2,(partlenght/2)+partlenght);
+                Color bot = new Color();
+                bot = bi.GetPixel(bi.Width / 2, (partlenght / 2) + (partlenght*2));*/
+                textBoxTest.BackColor = bi.GetPixel(bi.Width / 2, partlenght / 2);
             }
         }
-        private void pictureBox1_Click(object sender, EventArgs e)
+
+        private Bitmap bmpResize(Bitmap bi, int width, int height, bool bo)
+        {
+            var brush = new SolidBrush(Color.Black);
+            if (bo)
+            {
+                brush = new SolidBrush(Color.Black);
+            }
+            else
+            {
+                brush = new SolidBrush(Color.Black);
+            }
+            float scale = Math.Min((float)width / bi.Width, (float)height / bi.Height);
+            var bmp = new Bitmap((int)width, (int)height);
+            var graph = Graphics.FromImage(bmp);
+
+            // uncomment for higher quality output
+            graph.InterpolationMode = InterpolationMode.High;
+            graph.CompositingQuality = CompositingQuality.HighQuality;
+            graph.SmoothingMode = SmoothingMode.AntiAlias;
+
+            var scaleWidth = (int)(bi.Width * scale);
+            var scaleHeight = (int)(bi.Height * scale);
+
+            graph.FillRectangle(brush, new RectangleF(0, 0, width, height));
+            graph.DrawImage(bi, ((int)width - scaleWidth) / 2, ((int)height - scaleHeight) / 2, scaleWidth, scaleHeight);
+            return bmp;
+        }
+
+        private void pictureBox2_Click(object sender, EventArgs e)
         {
 
         }
-
-      
     }
 }
